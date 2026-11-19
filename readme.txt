@@ -88,17 +88,20 @@ Validaciones realizadas en cada etapa:
   Para actualizarla tras una ejecucion: npm run report:publish
 
   El reporte Serenity BDD incluye cada tarea y paso del actor con su
-  captura de pantalla (Photographer: TakePhotosOfInteractions).
+  captura de pantalla. La contrasena aparece enmascarada en los reportes.
 
 7. ESTRUCTURA DEL PROYECTO
 -------------------------
   playwright.config.ts        Configuracion de Playwright + Serenity/JS
                               (baseURL, reporters, fotografo, navegador)
+  src/models.ts               Modelos compartidos (User, Customer, Product)
   src/ui/                     Page Elements: localizadores por atributo data-test
+                              (helper testId y lista de productos CartList)
   src/tasks/                  Tareas Screenplay (Login, AddProductsToCart,
                               ViewCart, ProvideCheckoutInformation, FinishOrder)
   src/questions/              Preguntas Screenplay (ShoppingCart, OrderSummary,
                               OrderConfirmation)
+  src/photography/            Estrategia de capturas con nombres de archivo cortos
   test/purchase-flow.spec.ts  Escenario E2E del flujo de compra
   test/data/                  Datos de prueba (usuario, cliente, productos)
   reports/                    Reportes de evidencia de la ultima ejecucion

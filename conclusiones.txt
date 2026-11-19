@@ -71,11 +71,21 @@
   - Validaciones intermedias en cada etapa (URL, contador, contenido del
     carrito, resumen y total) ademas de la confirmacion final, para que un
     fallo indique exactamente en que paso se rompe el flujo.
-  - Datos de prueba separados del codigo (test/data); las credenciales
-    pueden sobreescribirse con las variables SAUCE_USERNAME / SAUCE_PASSWORD.
-  - Fotografo de Serenity (TakePhotosOfInteractions): cada interaccion queda
-    con captura de pantalla en el reporte. Playwright guarda ademas trace,
-    video y screenshot cuando una prueba falla.
+  - Las validaciones usan Ensure.eventually: reintentan hasta que la pagina
+    (una aplicacion React) se actualiza, en lugar de leerla una sola vez.
+  - Datos de prueba separados del codigo (test/data) y modelos compartidos
+    entre tareas y datos (src/models.ts); las credenciales pueden
+    sobreescribirse con las variables SAUCE_USERNAME / SAUCE_PASSWORD.
+  - La contrasena se escribe con Masked.valueOf, por lo que los reportes
+    muestran "[a masked value]" en lugar del valor real.
+  - Fotografo de Serenity: cada interaccion queda con captura de pantalla en
+    el reporte. Playwright guarda ademas trace, video y screenshot cuando una
+    prueba falla.
+  - Las capturas se nombran con terminacion ".png" (src/photography). Sin
+    esto, el reporte HTML de Playwright tomaba la version del navegador
+    ("...8078.4") como extension y generaba rutas de hasta 193 caracteres,
+    que hacian fallar "git clone" en Windows (limite de 260 caracteres).
+    Ahora la ruta mas larga del repositorio es de 102 caracteres.
 
 4. OBSERVACIONES DEL ENTORNO / HERRAMIENTAS
 -------------------------------------------

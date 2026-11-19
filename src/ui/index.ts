@@ -1,3 +1,4 @@
+export * from './CartList';
 export * from './CartPage';
 export * from './CheckoutCompletePage';
 export * from './CheckoutInformationPage';

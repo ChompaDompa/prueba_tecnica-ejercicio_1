@@ -1,4 +1,4 @@
-import type { User } from './models';
+import type { User } from '../../src/models';
 
 export const standardUser: User = {
     username: process.env.SAUCE_USERNAME || 'standard_user',

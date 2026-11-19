@@ -1,6 +1,6 @@
 import { Text } from '@serenity-js/web';
 
-import { CartPage, Header } from '../ui';
+import { CartList, Header } from '../ui';
 
 export class ShoppingCart {
     static badgeCount = () =>
@@ -9,6 +9,6 @@ export class ShoppingCart {
             .describedAs('number of items on the shopping cart badge');
 
     static productNames = () =>
-        Text.ofAll(CartPage.itemNames())
+        Text.ofAll(CartList.itemNames())
             .describedAs('names of products in the cart');
 }

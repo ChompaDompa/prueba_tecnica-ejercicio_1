@@ -1,15 +1,11 @@
 import { Masked, Task } from '@serenity-js/core';
 import { Click, Enter, Navigate } from '@serenity-js/web';
 
+import type { User } from '../models';
 import { LoginPage } from '../ui';
 
-interface Credentials {
-    username: string;
-    password: string;
-}
-
 export class Login {
-    static withCredentials = ({ username, password }: Credentials) =>
+    static as = ({ username, password }: User) =>
         Task.where(`#actor logs in as ${ username }`,
             Navigate.to('/'),
             Enter.theValue(username).into(LoginPage.usernameField()),

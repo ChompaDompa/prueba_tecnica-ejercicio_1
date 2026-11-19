@@ -1,13 +1,12 @@
 import { equals } from '@serenity-js/assertions';
 import { By, PageElement, PageElements, Text } from '@serenity-js/web';
 
-export class InventoryPage {
-    static items = () =>
-        PageElements.located(By.css('[data-test="inventory-item"]')).describedAs('inventory items');
+import { testId } from './testId';
 
+export class InventoryPage {
     static itemNamed = (productName: string) =>
-        InventoryPage.items()
-            .where(Text.of(PageElement.located(By.css('[data-test="inventory-item-name"]'))), equals(productName))
+        PageElements.located(testId('inventory-item'))
+            .where(Text.of(PageElement.located(testId('inventory-item-name'))), equals(productName))
             .first()
             .describedAs(`"${ productName }" product`);
 

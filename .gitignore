@@ -10,3 +10,7 @@ target/
 
 # Configuracion local del editor/asistente
 .claude/
+
+# Playwright CLI: configuracion local y salida (puede contener credenciales)
+.playwright/
+.playwright-cli/

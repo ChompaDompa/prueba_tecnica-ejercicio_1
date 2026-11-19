@@ -11,13 +11,6 @@ import { TakePhotosOfInteractionsAsPng } from './src/photography/TakePhotosOfInt
 const config: PlaywrightTestConfig = {
     testDir: './test',
     timeout: 60_000,
-    expect: {
-        timeout: 10_000,
-    },
-    fullyParallel: true,
-    forbidOnly: !! process.env.CI,
-    retries: process.env.CI ? 1 : 0,
-    workers: process.env.CI ? 1 : undefined,
 
     reporter: [
         [ 'html', { outputFolder: 'target/playwright-report', open: 'never' } ],
@@ -32,7 +25,6 @@ const config: PlaywrightTestConfig = {
 
     use: {
         baseURL: 'https://www.saucedemo.com',
-        testIdAttribute: 'data-test',
         defaultActorName: 'Standard User',
         crew: [
             Photographer.whoWill(TakePhotosOfInteractionsAsPng),

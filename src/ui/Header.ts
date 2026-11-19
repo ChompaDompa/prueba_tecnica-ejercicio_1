@@ -1,12 +1,11 @@
-import { By, PageElement } from '@serenity-js/web';
+import { PageElement } from '@serenity-js/web';
+
+import { testId } from './testId';
 
 export class Header {
     static shoppingCartLink = () =>
-        PageElement.located(By.css('[data-test="shopping-cart-link"]')).describedAs('shopping cart link');
+        PageElement.located(testId('shopping-cart-link')).describedAs('shopping cart link');
 
     static shoppingCartBadge = () =>
-        PageElement.located(By.css('[data-test="shopping-cart-badge"]')).describedAs('shopping cart badge');
-
-    static pageTitle = () =>
-        PageElement.located(By.css('[data-test="title"]')).describedAs('page title');
+        PageElement.located(testId('shopping-cart-badge')).describedAs('shopping cart badge');
 }

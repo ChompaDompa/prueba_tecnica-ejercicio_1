@@ -9,21 +9,24 @@ import { backpack, bikeLight, customer, standardUser, totalPriceOf } from './dat
 describe('Purchase flow', () => {
 
     it('allows a standard user to buy two products', async ({ actor }) => {
+        const products = [ backpack, bikeLight ] as const;
+        const productNames = products.map(({ name }) => name);
+
         await actor.attemptsTo(
-            Login.withCredentials(standardUser),
+            Login.as(standardUser),
             Ensure.eventually(Page.current().url().pathname, equals('/inventory.html')),
 
-            AddProductsToCart.called(backpack.name, bikeLight.name),
-            Ensure.eventually(ShoppingCart.badgeCount(), equals(2)),
+            AddProductsToCart.of(...products),
+            Ensure.eventually(ShoppingCart.badgeCount(), equals(products.length)),
 
             ViewCart.contents(),
             Ensure.eventually(Page.current().url().pathname, equals('/cart.html')),
-            Ensure.eventually(ShoppingCart.productNames(), equals([ backpack.name, bikeLight.name ])),
+            Ensure.eventually(ShoppingCart.productNames(), equals(productNames)),
 
             ProvideCheckoutInformation.of(customer),
             Ensure.eventually(Page.current().url().pathname, equals('/checkout-step-two.html')),
-            Ensure.eventually(OrderSummary.productNames(), equals([ backpack.name, bikeLight.name ])),
-            Ensure.eventually(OrderSummary.itemTotal(), equals(totalPriceOf(backpack, bikeLight))),
+            Ensure.eventually(OrderSummary.productNames(), equals(productNames)),
+            Ensure.eventually(OrderSummary.itemTotal(), equals(totalPriceOf(...products))),
 
             FinishOrder.now(),
             Ensure.eventually(Page.current().url().pathname, equals('/checkout-complete.html')),

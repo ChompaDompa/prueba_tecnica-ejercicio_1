@@ -1,10 +1,10 @@
 import { Text } from '@serenity-js/web';
 
-import { CheckoutOverviewPage } from '../ui';
+import { CartList, CheckoutOverviewPage } from '../ui';
 
 export class OrderSummary {
     static productNames = () =>
-        Text.ofAll(CheckoutOverviewPage.itemNames())
+        Text.ofAll(CartList.itemNames())
             .describedAs('names of products in the order summary');
 
     static itemTotal = () =>

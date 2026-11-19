@@ -1,12 +1,14 @@
-import { By, PageElement } from '@serenity-js/web';
+import { PageElement } from '@serenity-js/web';
+
+import { testId } from './testId';
 
 export class LoginPage {
     static usernameField = () =>
-        PageElement.located(By.css('[data-test="username"]')).describedAs('username field');
+        PageElement.located(testId('username')).describedAs('username field');
 
     static passwordField = () =>
-        PageElement.located(By.css('[data-test="password"]')).describedAs('password field');
+        PageElement.located(testId('password')).describedAs('password field');
 
     static loginButton = () =>
-        PageElement.located(By.css('[data-test="login-button"]')).describedAs('login button');
+        PageElement.located(testId('login-button')).describedAs('login button');
 }
