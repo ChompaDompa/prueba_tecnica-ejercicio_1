@@ -1,0 +1,41 @@
+{
+  "name": "saucedemo-e2e-serenity-playwright",
+  "version": "1.0.0",
+  "description": "E2E purchase flow test for saucedemo.com using Serenity/JS (Screenplay Pattern), Playwright Test and TypeScript",
+  "private": true,
+  "scripts": {
+    "postinstall": "serenity-bdd update",
+    "clean": "rimraf target",
+    "lint:types": "tsc --noEmit",
+    "test": "failsafe clean test:execute test:report",
+    "test:headed": "failsafe clean test:execute:headed test:report",
+    "test:execute": "playwright test",
+    "test:execute:headed": "playwright test --headed",
+    "test:report": "serenity-bdd run --features ./test --project \"SauceDemo E2E\"",
+    "report:open": "node -e \"require('child_process').exec((process.platform==='win32'?'start \\\"\\\" ':process.platform==='darwin'?'open ':'xdg-open ')+'target/site/serenity/index.html')\"",
+    "report:publish": "rimraf reports && node -e \"const fs=require('fs');fs.cpSync('target/site/serenity','reports/serenity',{recursive:true});fs.cpSync('target/playwright-report','reports/playwright-report',{recursive:true})\""
+  },
+  "keywords": [
+    "serenity-js",
+    "serenity-bdd",
+    "playwright",
+    "screenplay",
+    "e2e"
+  ],
+  "author": "John Bayron Rivera Morales",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "~1.64.0",
+    "@serenity-js/assertions": "^3.49.0",
+    "@serenity-js/console-reporter": "^3.49.0",
+    "@serenity-js/core": "^3.49.0",
+    "@serenity-js/playwright": "^3.49.0",
+    "@serenity-js/playwright-test": "^3.49.0",
+    "@serenity-js/serenity-bdd": "^3.49.0",
+    "@serenity-js/web": "^3.49.0",
+    "@types/node": "^26.6.6",
+    "npm-failsafe": "^1.4.0",
+    "rimraf": "^6.1.4",
+    "typescript": "^7.0.2"
+  }
+}

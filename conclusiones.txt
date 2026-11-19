@@ -1,0 +1,109 @@
+================================================================================
+ EJERCICIO 1 - HALLAZGOS Y CONCLUSIONES
+ Prueba E2E del flujo de compra en https://www.saucedemo.com/
+================================================================================
+
+1. RESULTADO GENERAL
+--------------------
+  - El flujo de compra solicitado se automatizo de punta a punta y se ejecuta
+    de forma exitosa: login -> agregar 2 productos -> ver carrito ->
+    formulario de compra -> finalizar -> confirmacion de la orden.
+  - Tiempo de ejecucion: ~3.5 s en modo headless y ~5.5 s en modo headed
+    (Chromium, Windows 11), sin contar la generacion del reporte Serenity BDD.
+  - Estabilidad: 5 de 5 ejecuciones repetidas exitosas
+    (npx playwright test --repeat-each=5), sin esperas fijas (sleeps):
+    Serenity/JS y Playwright sincronizan automaticamente con el DOM.
+  - Se hizo una prueba negativa controlada (se altero temporalmente el valor
+    esperado del total) para confirmar que las aserciones detectan fallos:
+    la prueba fallo con el mensaje
+      "Expected item total of the order to equal 1 / Received number: 39.98"
+    y el reporte Serenity BDD se genero igualmente (npm-failsafe).
+
+2. HALLAZGOS SOBRE LA APLICACION
+--------------------------------
+  2.1 Texto de confirmacion: el enunciado indica "THANK YOU FOR YOUR ORDER",
+      pero el sitio muestra "Thank you for your order!" (con mayusculas
+      iniciales y signo de exclamacion). Se verifico que el elemento no
+      aplica text-transform: uppercase, es decir, el texto visible no esta
+      en mayusculas. Por eso la validacion se hizo sin distinguir mayusculas
+      y aceptando el signo de exclamacion final:
+        /^thank you for your order!?$/i
+      Se recomienda alinear el criterio de aceptacion con el texto real.
+
+  2.2 Totales: Item total = $39.98 (29.99 + 9.99), Tax = $3.20 (~8%) y
+      Total = $43.18. La prueba valida que el Item total sea igual a la suma
+      de los precios de los productos agregados. Como 29.99 + 9.99 en punto
+      flotante da 39.980000000000004, el valor esperado se redondea a 2
+      decimales antes de comparar.
+
+  2.3 El formulario de compra acepta cualquier valor en "Zip/Postal Code"
+      (por ejemplo "1"): no hay validacion de formato, solo de campo
+      obligatorio. Es un punto a considerar para pruebas negativas.
+
+  2.4 Al finalizar la compra el contador del carrito desaparece, lo que
+      confirma que el carrito se vacia tras la orden.
+
+  2.5 La version actual del sitio incluye funcionalidades no mencionadas en
+      el enunciado ("Dynamic Catalog" en el menu y el boton "Generate PDF
+      order" en la confirmacion). No forman parte del alcance de esta prueba.
+
+  2.6 El sitio expone atributos data-test estables en todos los elementos
+      relevantes (username, password, login-button, shopping-cart-badge,
+      checkout, firstName, finish, complete-header, etc.). Se usaron como
+      localizadores, lo que hace la prueba independiente de estilos y textos.
+
+3. DECISIONES TECNICAS
+----------------------
+  - Serenity/JS es la implementacion oficial de Serenity BDD para
+    JavaScript/TypeScript; se integro con Playwright Test como runner y con
+    Serenity BDD CLI para el reporte "living documentation".
+  - Patron Screenplay: el actor ejecuta Tareas de negocio (Login,
+    AddProductsToCart, ViewCart, ProvideCheckoutInformation, FinishOrder) y
+    responde Preguntas (ShoppingCart, OrderSummary, OrderConfirmation). Los
+    localizadores se aislaron en src/ui. Esto da pruebas legibles para negocio
+    y un reporte que narra el escenario paso a paso.
+  - Los botones "Add to cart" se localizan a partir del NOMBRE del producto
+    (tarjeta de producto cuyo nombre coincide -> su boton), en lugar de
+    construir el data-test a mano (p. ej. "add-to-cart-sauce-labs-backpack").
+    Asi la tarea sirve para cualquier producto, incluso los que tienen
+    caracteres especiales en su identificador, como
+    "add-to-cart-test.allthethings()-t-shirt-(red)".
+  - Validaciones intermedias en cada etapa (URL, contador, contenido del
+    carrito, resumen y total) ademas de la confirmacion final, para que un
+    fallo indique exactamente en que paso se rompe el flujo.
+  - Datos de prueba separados del codigo (test/data); las credenciales
+    pueden sobreescribirse con las variables SAUCE_USERNAME / SAUCE_PASSWORD.
+  - Fotografo de Serenity (TakePhotosOfInteractions): cada interaccion queda
+    con captura de pantalla en el reporte. Playwright guarda ademas trace,
+    video y screenshot cuando una prueba falla.
+
+4. OBSERVACIONES DEL ENTORNO / HERRAMIENTAS
+-------------------------------------------
+  - @serenity-js/playwright-test 3.49 exige @playwright/test ~1.64 como
+    dependencia par; la ultima version de Playwright era 1.65, por lo que se
+    fijo la version 1.64 para mantener compatibilidad.
+  - El reporte Serenity BDD requiere Java 17+. Con JDK 27 aparecen
+    advertencias de la JVM ("final field mutation") y de Node
+    (DeprecationWarning) durante la generacion del reporte; son informativas
+    y no afectan el resultado.
+
+5. CONCLUSIONES
+---------------
+  - El flujo critico de compra de saucedemo.com funciona correctamente para
+    standard_user y la prueba lo demuestra con evidencia (reportes Serenity
+    BDD y Playwright en la carpeta reports/).
+  - La combinacion Serenity/JS + Playwright + TypeScript permite pruebas
+    estables, rapidas y con reportes orientados a negocio, cumpliendo con el
+    framework deseable (Serenity BDD) sin renunciar al ecosistema Playwright.
+  - La principal discrepancia encontrada es entre el texto esperado del
+    enunciado (mayusculas) y el texto real del sitio.
+
+6. MEJORAS PROPUESTAS
+---------------------
+  - Escenarios negativos: usuario bloqueado (locked_out_user), credenciales
+    invalidas y formulario de compra con campos vacios.
+  - Ejecutar el mismo escenario con otros usuarios del sitio (problem_user,
+    performance_glitch_user, error_user, visual_user) para detectar defectos.
+  - Escenarios guiados por datos (distintas combinaciones de productos).
+  - Ejecucion multi-navegador (Firefox, WebKit) y en viewport movil.
+  - Validar tambien el impuesto y el total final segun la regla de negocio.
