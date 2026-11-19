@@ -13,7 +13,7 @@
     "test:execute:headed": "playwright test --headed",
     "test:report": "serenity-bdd run --features ./test --project \"SauceDemo E2E\"",
     "report:open": "node -e \"require('child_process').exec((process.platform==='win32'?'start \\\"\\\" ':process.platform==='darwin'?'open ':'xdg-open ')+'target/site/serenity/index.html')\"",
-    "report:publish": "rimraf reports && node -e \"const fs=require('fs');fs.cpSync('target/site/serenity','reports/serenity',{recursive:true});fs.cpSync('target/playwright-report','reports/playwright-report',{recursive:true})\""
+    "report:publish": "node -e \"const fs=require('fs');const missing=['target/site/serenity/index.html','target/playwright-report/index.html'].filter(f=>!fs.existsSync(f));if(missing.length){console.error('Missing: '+missing.join(', ')+'. Run npm test first.');process.exit(1)}fs.rmSync('reports',{recursive:true,force:true});fs.cpSync('target/site/serenity','reports/serenity',{recursive:true});fs.cpSync('target/playwright-report','reports/playwright-report',{recursive:true})\""
   },
   "keywords": [
     "serenity-js",

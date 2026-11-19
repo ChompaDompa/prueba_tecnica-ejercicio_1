@@ -9,6 +9,16 @@ export class OrderSummary {
 
     static itemTotal = () =>
         Text.of(CheckoutOverviewPage.itemTotalLabel())
-            .as(label => Number(label.replace(/[^0-9.]/g, '')))
+            .as(parsePrice)
             .describedAs('item total of the order');
+}
+
+function parsePrice(label: string): number {
+    const match = label.match(/\$(\d+(?:\.\d+)?)/);
+
+    if (! match) {
+        throw new Error(`Could not find a price in "${ label }"`);
+    }
+
+    return Number(match[1]);
 }

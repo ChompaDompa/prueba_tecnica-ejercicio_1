@@ -1,4 +1,4 @@
-import { Task } from '@serenity-js/core';
+import { Masked, Task } from '@serenity-js/core';
 import { Click, Enter, Navigate } from '@serenity-js/web';
 
 import { LoginPage } from '../ui';
@@ -13,7 +13,7 @@ export class Login {
         Task.where(`#actor logs in as ${ username }`,
             Navigate.to('/'),
             Enter.theValue(username).into(LoginPage.usernameField()),
-            Enter.theValue(password).into(LoginPage.passwordField()),
+            Enter.theValue(Masked.valueOf(password)).into(LoginPage.passwordField()),
             Click.on(LoginPage.loginButton()),
         );
 }
